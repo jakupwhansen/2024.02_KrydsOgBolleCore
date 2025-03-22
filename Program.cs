@@ -52,5 +52,5 @@ while (true)
             listenAfxogyHistory.Add(i);
         }
     }
-    catch (Exception ex) { }
+    catch (Exception ex) { } 
 }
