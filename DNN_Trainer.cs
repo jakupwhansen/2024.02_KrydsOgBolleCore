@@ -14,8 +14,8 @@ namespace KrydsOgBolleCore
         {
             //----------SETUP---------------------------------------------------------
             myDNN = new DeepNeuralNetwork();
-            myDNN.start("[2,1]", "0, 0 { 0 } 1, 0 { 0 } 0, 1 { 0 } 1, 1 { 1 }");
-            myDNN.theNet.learningRate = 0.25;
+            myDNN.start("[9,9,9,9]", "0,0,0,0,1,0,0,0,0 {1,0,0,0,0,0,0,0,0}");
+            myDNN.theNet.learningRate = 0.025;
             myDNN.theNet.activFunction = "sigmoid";
             myDNN.theNet.clipGradience = false;
             myDNN.visExtra = false;
@@ -23,73 +23,47 @@ namespace KrydsOgBolleCore
             myDNN.viseBiasNeuroner = true;
             myDNN.theNet.momentum = 0.0001;
         }
-        List<double> indputData = new List<double>();
-        public void DNN_Make_Predictions()
+       
+        public void DNN_Make_Predictions(List<double> indputDataInd)
         {
-            //--------MAKE PREDICTION-----------------------------------------------------           
-            indputData.Add(1);
-            indputData.Add(1);
-            myDNN.addInputData(indputData);
+            //--------MAKE PREDICTION-----------------------------------------------------
+            // List<double> indputData = new List<double>();
+            //indputData.Add(1);
+            //indputData.Add(1);
+            myDNN.addInputData(indputDataInd);
             myDNN.knapForwardPropagate();
             Console.WriteLine("-----------PRINT OUTPUT 1 ------------");
             foreach (var item in myDNN.getOutput())
             {
                 Console.WriteLine("Out is: " + item);
             }
-        }
-        public void TrainDNN()
-        {   
-            //---------TRAIN--------------------------------------------------------------
-            for (int i = 0; i < 1000; i++)
-            {
-                myDNN.TrainOneStep();
-            }
-            //--------MAKE PREDICTION-----------------------------------------------------
-            indputData = new List<double>();
-            indputData.Add(0);
-            indputData.Add(0);
-            myDNN.addInputData(indputData);
-            myDNN.knapForwardPropagate();
-            Console.WriteLine("-----------PRINT OUTPUT 2 ------------");
-            foreach (var item in myDNN.getOutput())
-            {
-                Console.WriteLine("Out is: " + item);
-            }
-            //-------EXPORT AND IMPORT MODEL-----------------------------------------------
-            String export = myDNN.export();
-            System.IO.File.WriteAllText(@"WriteLines.txt", export);
-            String hentet = System.IO.File.ReadAllText(@"WriteLines.txt");
-            myDNN.import(hentet);
-            //--------MAKE PREDICTION-----------------------------------------------------
-            indputData = new List<double>();
-            indputData.Add(0);
-            indputData.Add(0);
-            myDNN.addInputData(indputData);
-            myDNN.knapForwardPropagate();
-            Console.WriteLine("-----------PRINT OUTPUT 3 ------------");
-            foreach (var item in myDNN.getOutput())
-            {
-                Console.WriteLine("Out is: " + item);
-            }
-        }
+        }       
         public void DNN_Export_Weights()
         {
             //-------EXPORT AND IMPORT MODEL-----------------------------------------------
             String export = myDNN.export();
-            System.IO.File.WriteAllText(@"WriteLines.txt", export);          
+            System.IO.File.WriteAllText(@"DNN_Weights.txt", export);          
         }
         public void DNN_Import_Weights()
         {
-            String hentet = System.IO.File.ReadAllText(@"WriteLines.txt");
-            myDNN.import(hentet);
+            try
+            {
+                String hentet = System.IO.File.ReadAllText(@"DNN_Weights.txt");
+                myDNN.import(hentet);
+            }
+            catch
+            (Exception ex)
+            {
+                Console.WriteLine("Ingen vægte fundet");
+            }
+
         }
-        public void DNN_Train_Again()
-        {
-            String hentet = System.IO.File.ReadAllText(@"WriteLines.txt");
-            DNN_Setup();
-            myDNN.getLearningData("0, 0 { 0 } 1, 0 { 1 } 0, 1 { 1 } 1, 1 { 1 }");
+        public void DNN_Train_Again(string learningData, int numberOfiterations)
+        {  
+           // myDNN.getLearningData("0, 0 { 0 } 1, 0 { 1 } 0, 1 { 1 } 1, 1 { 1 }");
+            myDNN.getLearningData(learningData);
             Console.WriteLine("-------------Train with New Learning Data----------------------");
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < numberOfiterations; i++)
             {
                 myDNN.TrainOneStep();
             }
