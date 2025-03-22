@@ -16,11 +16,19 @@ while (true)
     Console.WriteLine(xo[p[6]] + " | " + xo[p[7]] + " | " + xo[p[8]]);
     Console.WriteLine("   ");
     Console.WriteLine("Hvilken plads vil du sætte nu?");
+    //----Tjek for vinder-----
+    int vinder = kb.CheckForWinner();
+    if (vinder == 1)
+        Console.WriteLine("Kryds har vundet.");
+    if (vinder == 2)
+        Console.WriteLine("Bolle har vundet.");
+
+
     String ind = Console.ReadLine();
     try
     {
         int i = Convert.ToInt32(ind);
-        kb.move(i);
+        kb.move(i);        
     }
     catch (Exception ex) { }
 }
