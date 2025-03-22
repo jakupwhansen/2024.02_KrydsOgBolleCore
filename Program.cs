@@ -17,8 +17,13 @@ while (true)
     if (vinder == 2)
     {
         Console.WriteLine("Bolle har vundet.");
-        var data2 = new List<int> { 1, 2, 3, 4 };
-        DataSaver.AppendMovesAfterO("minfil.txt", listenAfxogyHistory);
+        var data2 = new List<int> { 1, 2, 3, 4 };        
+
+        
+        //   1,0,0,0,0,0,0,0,0 {0,0,0,0,1,0,0,0,0}
+        //   1,0,0,0,2,0,0,1,0 {0,1,0,0,0,0,0,0,0}
+        TicTacToeDataSaver.AppendOData("dataset.txt", listenAfxogyHistory);
+        
         Console.WriteLine("Tryk 'n' for nyt spil");
         String space = Console.ReadLine();
         if (space == "n")
