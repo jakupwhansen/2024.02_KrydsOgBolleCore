@@ -1,5 +1,7 @@
 ﻿using KrydsOgBolleCore;
 using System.Runtime.CompilerServices;
+
+
 List<int> listenAfxogyHistory = new List<int>();
 KrydsOgBolle kb = new KrydsOgBolle();
 IDictionary<int, string> xo = new Dictionary<int, string>();
@@ -21,22 +23,11 @@ while (true)
         //   1,0,0,0,2,0,0,1,0 {0,1,0,0,0,0,0,0,0}
         TicTacToeDataSaver.AppendOData("dataset.txt", listenAfxogyHistory);
         
-        Console.WriteLine("Tryk 'n' for nyt spil, eller 'train' for at træne DNN");
+        Console.WriteLine("Data gemt i dataset. Tryk 'n' for nyt spil, eller 'train' for at træne DNN");
         String space = Console.ReadLine();
         
         if (space == "n")
-            kb.resetGame();
-        if (space == "train")
-        {
-            DNN_Trainer dnn = new DNN_Trainer();
-            dnn.DNN_Setup();
-            dnn.DNN_Import_Weights();
-            String hentet = System.IO.File.ReadAllText(@"dataset.txt");
-            dnn.DNN_Train_Again(hentet, 10000);
-            dnn.DNN_Export_Weights();
-
-        }
-            
+            kb.resetGame();             
     }
     //------------------------------------------------------------------
     Console.Clear();
@@ -47,7 +38,10 @@ while (true)
     Console.WriteLine("---------");
     Console.WriteLine(xo[p[6]] + " | " + xo[p[7]] + " | " + xo[p[8]]);
     Console.WriteLine("   ");
-    Console.WriteLine("Hvilken plads vil du sætte nu?");
+    Console.WriteLine("Hvilken plads vil du sætte nu? eller vælg train for at træne modellen");
+    //-----------------------------------------------------------
+
+  
 
     //---------------Tester modellen her.------------------------------
 
@@ -59,7 +53,18 @@ while (true)
     //--------------------------------------------------
 
     String ind = Console.ReadLine();
-    
+
+    if (ind == "train")
+    {
+        DNN_Trainer dnn = new DNN_Trainer();
+        dnn.DNN_Setup();
+       // dnn.DNN_Import_Weights();
+        String hentet = System.IO.File.ReadAllText(@"dataset.txt");
+        dnn.DNN_Train_Again(hentet, 10000);
+        dnn.DNN_Export_Weights();
+        
+    }
+
     try
     {
         int i = Convert.ToInt32(ind);

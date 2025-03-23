@@ -14,8 +14,8 @@ namespace KrydsOgBolleCore
         {
             //----------SETUP---------------------------------------------------------
             myDNN = new DeepNeuralNetwork();
-            myDNN.start("[9,9,9,9]", "0,0,0,0,1,0,0,0,0 {1,0,0,0,0,0,0,0,0}");
-            myDNN.theNet.learningRate = 0.025;
+            myDNN.start("[9,9,9,9]", "");
+            myDNN.theNet.learningRate = 0.25;
             myDNN.theNet.activFunction = "sigmoid";
             myDNN.theNet.clipGradience = false;
             myDNN.visExtra = false;
@@ -60,14 +60,33 @@ namespace KrydsOgBolleCore
         }
         public void DNN_Train_Again(string learningData, int numberOfiterations)
         {  
-           // myDNN.getLearningData("0, 0 { 0 } 1, 0 { 1 } 0, 1 { 1 } 1, 1 { 1 }");
-            myDNN.getLearningData(learningData);
+            myDNN.getLearningData(FjernNewlines(learningData));
+
+           // myDNN.getLearningData("0, 0 { 0 }  1, 0 { 0 }  0, 1 { 0 }  1, 1 { 1 }");  
             Console.WriteLine("-------------Train with New Learning Data----------------------");
             for (int i = 0; i < numberOfiterations; i++)
             {
                 myDNN.TrainOneStep();
+                if (i % 1000 == 0)
+                    Console.WriteLine(myDNN.theNet.errorSum);
             }
 
+        }
+        public static string FjernNewlines(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            // Fjern Windows-linjeskift (\r\n)
+            string udenLinjeskift = input.Replace("\r\n", "");
+
+            // Fjern enkeltstående \n
+            udenLinjeskift = udenLinjeskift.Replace("\n", "");
+
+            // Fjern enkeltstående \r
+            udenLinjeskift = udenLinjeskift.Replace("\r", "");
+
+            return udenLinjeskift;
         }
     }
 }
