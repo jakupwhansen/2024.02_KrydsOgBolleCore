@@ -45,12 +45,19 @@ while (true)
 
 
 
-    //---------------Tester modellen her.------------------------------
+    //---------------Bruge Modellen til predictions. ------------------------------
 
     DNN_Trainer dnn2 = new DNN_Trainer();
-    dnn2.DNN_Train_Again_SetUp();
-    List<double> doubleList = kb.getGame().Select(i => (double)i).ToList();
-    dnn2.DNN_Make_Predictions(doubleList);
+    try
+    {
+        dnn2.DNN_Train_Again_SetUp();
+        List<double> doubleList = kb.getGame().Select(i => (double)i).ToList();
+        dnn2.DNN_Make_Predictions(doubleList);
+    }
+    catch (Exception e) {
+        Console.WriteLine("Ingen model lavet endnu...");
+    }
+    
     //--------------------------------------------------
 
     String ind = Console.ReadLine();
@@ -69,7 +76,7 @@ while (true)
         dnn.DNN_Train_Again_SetUp();
        
         String hentet = System.IO.File.ReadAllText(@"dataset.txt");
-        dnn.DNN_Train_Again(hentet, 20);
+        dnn.DNN_Train_Again(hentet, 100);
         dnn.DNN_Export_Weights();
     }
 

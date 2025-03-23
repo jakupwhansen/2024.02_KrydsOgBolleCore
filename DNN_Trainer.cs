@@ -71,13 +71,17 @@ namespace KrydsOgBolleCore
             }
 
         }
-        double previousErrorSum = 0;
+        
         public void DNN_Train_Again(string learningData, int numberOfiterations)
         {  
             myDNN.getLearningData(FjernNewlines(learningData));
 
            // myDNN.getLearningData("0, 0 { 0 }  1, 0 { 0 }  0, 1 { 0 }  1, 1 { 1 }");  
             Console.WriteLine("-------------Train with New Learning Data----------------------");
+
+            // errorSum is only getting bigger in a traversel throug the dataset, so
+            // we can use this, to get the errorSum at the heighest point for this traversel.
+            double previousErrorSum = 0;
             for (int i = 0; i < numberOfiterations; i++)
             {
                 myDNN.TrainOneStep();
