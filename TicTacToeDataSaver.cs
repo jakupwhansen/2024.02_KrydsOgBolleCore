@@ -20,45 +20,37 @@ namespace KrydsOgBolleCore
         ///   3) Append a line:  "<board> {<newOMoveArray>}"
         ///       to the file.
         /// </summary>
-        public static void AppendOData(string filename, List<int> moves)
+        public static void AppendOData(string filename, List<int[]> listX, List<int[]> listO)
         {
-            // Go through O's moves => odd indices: 1, 3, 5, ...
-            for (int i = 1; i < moves.Count; i += 2)
-            {
-                // 1) Build the board (9 ints) before O's new move:
-                //    0 = empty, 1 = X, 2 = O
-                int[] boardBefore = new int[9];
-
-                // Fill in X and O for all moves up to (but NOT including) i-th move
-                for (int j = 0; j < i; j++)
+            int i = 0;
+            string samlet = "";
+            while (i < listX.Count)  //Der er altid samme antal i listX og ListO fordi List0 er den sidste som slår og vinder.
+            { 
+                
+                int j = 0;
+                while (j < listX[i].Length )
                 {
-                    int pos = moves[j];
-                    if (j % 2 == 0)
-                    {
-                        // X's move
-                        boardBefore[pos] = 1;
-                    }
-                    else
-                    {
-                        // O's move
-                        boardBefore[pos] = 2;
-                    }
+                    samlet += listX[i][j]+ ",";
+                    j++;
                 }
+                int k = 0;
+                //Fjerner sidste komma her:
+                samlet = samlet.Remove(samlet.Length - 1);
 
-                // 2) "Output" array: use 1 to mark the new O position, otherwise 0
-                int[] oMoveArray = new int[9];
-                oMoveArray[moves[i]] = 1; // <-- CHANGED HERE (was '2')
-
-                // 3) Convert both arrays to comma-separated strings
-                string boardString = string.Join(",", boardBefore);
-                string oMoveString = string.Join(",", oMoveArray);
-
-                // Example: "1,0,0,0,0,0,0,0,0 {0,0,0,0,1,0,0,0,0}"
-                string line = $"{boardString} {{{oMoveString}}}";
-
-                // Append line to the file
-                File.AppendAllText(filename, line + Environment.NewLine);
+                samlet =  samlet + "{";
+                while (k < listO[i].Length)
+                {
+                    samlet += listO[i][k] + ",";
+                    k++;
+                }
+                samlet =  samlet + "}" + Environment.NewLine;
+               
+                i++;
             }
+
+            // Example: "1,0,0,0,0,0,0,0,0 {0,0,0,0,1,0,0,0,0}"
+            File.AppendAllText(filename, samlet );
+
         }
     }
 }

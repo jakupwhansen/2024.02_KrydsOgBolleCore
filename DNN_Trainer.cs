@@ -10,11 +10,11 @@ namespace KrydsOgBolleCore
     internal class DNN_Trainer
     {
         DeepNeuralNetwork myDNN;
-        public void DNN_Setup()
+        public void DNN_Setup_First_time()
         {
             //----------SETUP---------------------------------------------------------
-            myDNN = new DeepNeuralNetwork();
-            myDNN.start("[9,9,9,9]", "");
+            myDNN = new DeepNeuralNetwork();          
+            myDNN.start("[9,9,9,9]", "");  
             myDNN.theNet.learningRate = 0.25;
             myDNN.theNet.activFunction = "sigmoid";
             myDNN.theNet.clipGradience = false;
@@ -23,6 +23,19 @@ namespace KrydsOgBolleCore
             myDNN.viseBiasNeuroner = true;
             myDNN.theNet.momentum = 0.0001;
         }
+        public void DNN_Train_Again_SetUp()
+        {
+            myDNN = new DeepNeuralNetwork();
+            String hentet = System.IO.File.ReadAllText(@"DNN_Weights.txt");
+            myDNN.import(hentet);
+            myDNN.theNet.learningRate = 0.25;
+            myDNN.theNet.activFunction = "sigmoid";
+            myDNN.theNet.clipGradience = false;
+            myDNN.visExtra = false;
+            myDNN.theNet.weightCorrectionFormula = 0;
+            myDNN.viseBiasNeuroner = true;
+            myDNN.theNet.momentum = 0.0001;
+         }
        
         public void DNN_Make_Predictions(List<double> indputDataInd)
         {
@@ -58,6 +71,7 @@ namespace KrydsOgBolleCore
             }
 
         }
+        double previousErrorSum = 0;
         public void DNN_Train_Again(string learningData, int numberOfiterations)
         {  
             myDNN.getLearningData(FjernNewlines(learningData));
@@ -67,8 +81,9 @@ namespace KrydsOgBolleCore
             for (int i = 0; i < numberOfiterations; i++)
             {
                 myDNN.TrainOneStep();
-                if (i % 1000 == 0)
-                    Console.WriteLine(myDNN.theNet.errorSum);
+                if(myDNN.theNet.errorSum < previousErrorSum)
+                    Console.WriteLine(previousErrorSum);
+                previousErrorSum = myDNN.theNet.errorSum;
             }
 
         }

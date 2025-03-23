@@ -2,7 +2,8 @@
 using System.Runtime.CompilerServices;
 
 
-List<int> listenAfxogyHistory = new List<int>();
+List < int[]> listenX = new List<int[]>();
+List<int[]> listenO = new List<int[]>();
 KrydsOgBolle kb = new KrydsOgBolle();
 IDictionary<int, string> xo = new Dictionary<int, string>();
 xo.Add(0, " ");
@@ -12,6 +13,7 @@ while (true)
 {
     //----Tjek for vinder--------------------------------------------------
     int vinder = kb.CheckForWinner();
+    
     if (vinder == 1)
     {
         Console.WriteLine("Kryds har vundet.");
@@ -21,7 +23,7 @@ while (true)
         Console.WriteLine("Bolle har vundet."); 
         //   1,0,0,0,0,0,0,0,0 {0,0,0,0,1,0,0,0,0}
         //   1,0,0,0,2,0,0,1,0 {0,1,0,0,0,0,0,0,0}
-        TicTacToeDataSaver.AppendOData("dataset.txt", listenAfxogyHistory);
+        TicTacToeDataSaver.AppendOData("dataset.txt", listenX, listenO);
         
         Console.WriteLine("Data gemt i dataset. Tryk 'n' for nyt spil, eller 'train' for at træne DNN");
         String space = Console.ReadLine();
@@ -41,28 +43,34 @@ while (true)
     Console.WriteLine("Hvilken plads vil du sætte nu? eller vælg train for at træne modellen");
     //-----------------------------------------------------------
 
-  
+
 
     //---------------Tester modellen her.------------------------------
 
     DNN_Trainer dnn2 = new DNN_Trainer();
-    dnn2.DNN_Setup();
-    dnn2.DNN_Import_Weights();
+    dnn2.DNN_Train_Again_SetUp();
     List<double> doubleList = kb.getGame().Select(i => (double)i).ToList();
     dnn2.DNN_Make_Predictions(doubleList);
     //--------------------------------------------------
 
     String ind = Console.ReadLine();
 
-    if (ind == "train")
+    if (ind == "tf")
     {
         DNN_Trainer dnn = new DNN_Trainer();
-        dnn.DNN_Setup();
-       // dnn.DNN_Import_Weights();
+        dnn.DNN_Setup_First_time();       
         String hentet = System.IO.File.ReadAllText(@"dataset.txt");
-        dnn.DNN_Train_Again(hentet, 10000);
+        dnn.DNN_Train_Again(hentet, 20);
+        dnn.DNN_Export_Weights();        
+    }
+    if (ind == "ta")
+    {
+        DNN_Trainer dnn = new DNN_Trainer();
+        dnn.DNN_Train_Again_SetUp();
+       
+        String hentet = System.IO.File.ReadAllText(@"dataset.txt");
+        dnn.DNN_Train_Again(hentet, 20);
         dnn.DNN_Export_Weights();
-        
     }
 
     try
@@ -71,7 +79,17 @@ while (true)
         if( kb.move(i))
         {
             //gemme i liste
-            listenAfxogyHistory.Add(i);
+            if (kb.aktivPlayer == 2) //X så gemmer vi hele boardet som det ser ud lige nu.
+            {
+                listenX.Add(kb.getGame().ToArray());
+            }
+            if (kb.aktivPlayer == 1)
+            {
+                int[] ints = new int[9];
+                ints[i] = 1;
+                listenO.Add(ints);
+            }
+
         }
     }
     catch (Exception ex) { } 
